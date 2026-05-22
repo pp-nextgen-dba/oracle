@@ -673,6 +673,10 @@
                   <p>Restore means copy backup files back to disk. Recover means apply archived redo and incremental backups so the restored files reach the required point in time.</p>
                 </div>
                 <div class="concept-item">
+                  <h4>Table recovery</h4>
+                  <p>RMAN can recover one or more tables to a previous point in time by using an auxiliary location, exporting the recovered table, and importing it back into the target database.</p>
+                </div>
+                <div class="concept-item">
                   <h4>Control file and SPFILE</h4>
                   <p>The control file stores database structure and RMAN metadata. The SPFILE stores initialization parameters. Back them up because disaster recovery often starts with these files.</p>
                 </div>
@@ -760,6 +764,40 @@ run {
   recover database;
 }
 alter database open resetlogs;</code></pre>
+                </div>
+              </details>
+
+              <details class="command-group">
+                <summary>Restore a table</summary>
+                <div class="command-body">
+                  <p>Use RMAN table recovery when a table was dropped, truncated, or damaged and you want to bring it back without restoring the whole database. The auxiliary destination must have enough temporary space for RMAN's recovery work.</p>
+                  <pre><code>rman target /
+
+recover table HR.EMPLOYEES
+  until time "to_date('2026-05-22 10:30:00', 'yyyy-mm-dd hh24:mi:ss')"
+  auxiliary destination '/u01/app/oracle/rman_aux';
+
+recover table HR.EMPLOYEES
+  until sequence 120 thread 1
+  auxiliary destination '/u01/app/oracle/rman_aux';
+
+recover table HR.EMPLOYEES
+  until time "to_date('2026-05-22 10:30:00', 'yyyy-mm-dd hh24:mi:ss')"
+  auxiliary destination '/u01/app/oracle/rman_aux'
+  remap table HR.EMPLOYEES:EMPLOYEES_RESTORED;
+
+recover table HR.EMPLOYEES
+  until time "to_date('2026-05-22 10:30:00', 'yyyy-mm-dd hh24:mi:ss')"
+  auxiliary destination '/u01/app/oracle/rman_aux'
+  remap schema HR:HR_RESTORE;
+
+recover table HR.EMPLOYEES
+  until time "to_date('2026-05-22 10:30:00', 'yyyy-mm-dd hh24:mi:ss')"
+  auxiliary destination '/u01/app/oracle/rman_aux'
+  datapump destination '/backup/datapump'
+  dump file 'employees_restore.dmp'
+  notableimport;</code></pre>
+                  <p>Use <code>remap table</code> when you want to compare the restored table before replacing production data. Use <code>notableimport</code> when you only want RMAN to create a Data Pump dump file for manual import.</p>
                 </div>
               </details>
 
