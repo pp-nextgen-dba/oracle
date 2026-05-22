@@ -207,6 +207,22 @@
       padding-left: 19px;
     }
 
+    .topic-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 14px;
+      color: var(--red-dark);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .topic-link:hover,
+    .topic-link:focus {
+      text-decoration: underline;
+      outline: none;
+    }
+
     .tag {
       display: inline-flex;
       align-items: center;
@@ -353,6 +369,89 @@
       box-shadow: var(--shadow);
     }
 
+    .rman-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.78fr) minmax(340px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .concept-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .concept-item {
+      border-left: 4px solid var(--red);
+      padding-left: 12px;
+    }
+
+    .concept-item h4 {
+      margin: 0 0 4px;
+      font-size: 16px;
+    }
+
+    .concept-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .command-group {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .command-group + .command-group {
+      margin-top: 10px;
+    }
+
+    .command-group summary {
+      cursor: pointer;
+      padding: 15px 16px;
+      font-weight: 800;
+      list-style-position: inside;
+    }
+
+    .command-group summary:hover,
+    .command-group[open] summary {
+      background: #ecefe7;
+    }
+
+    .command-body {
+      padding: 0 16px 16px;
+    }
+
+    .command-body p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    pre {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid #d8dbd2;
+      background: #20201d;
+      color: #f5f2ea;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    pre code {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+
     table {
       width: 100%;
       min-width: 760px;
@@ -405,7 +504,8 @@
       }
 
       .grid,
-      .two-column {
+      .two-column,
+      .rman-layout {
         grid-template-columns: 1fr;
       }
     }
@@ -451,6 +551,7 @@
       <nav aria-label="Knowledgebase sections">
         <a href="#map">Learning Map</a>
         <a href="#notes">My Technical Notes</a>
+        <a href="#rman">RMAN</a>
         <a href="#quick-reference">Quick Reference</a>
         <a href="#study-plan">Study Plan</a>
       </nav>
@@ -508,6 +609,7 @@
                 <li>RMAN backup and recovery basics</li>
                 <li>Data Pump import and export workflows</li>
               </ul>
+              <a class="topic-link" href="#rman">Open RMAN commands</a>
             </article>
 
             <article class="card">
@@ -545,6 +647,160 @@
           </div>
         </section>
 
+        <section id="rman">
+          <div class="section-header">
+            <div>
+              <h3>RMAN Backup, Restore, and Recovery</h3>
+              <p>Recovery Manager is Oracle's backup and recovery tool. It understands database files, tracks backup metadata, validates recoverability, and automates restore and media recovery work that is risky to do manually.</p>
+            </div>
+          </div>
+
+          <div class="rman-layout">
+            <article class="card">
+              <span class="tag admin">RMAN</span>
+              <h4>Important Concepts</h4>
+              <div class="concept-list">
+                <div class="concept-item">
+                  <h4>Backup set and image copy</h4>
+                  <p>A backup set is RMAN's compact backup format, usually written as backup pieces. An image copy is a file-level copy that can sometimes be switched into place faster.</p>
+                </div>
+                <div class="concept-item">
+                  <h4>Full, incremental, and archived redo backups</h4>
+                  <p>A full backup captures datafiles. Incremental backups capture changed blocks. Archived redo logs are required to recover committed changes after the backup time.</p>
+                </div>
+                <div class="concept-item">
+                  <h4>Restore vs recover</h4>
+                  <p>Restore means copy backup files back to disk. Recover means apply archived redo and incremental backups so the restored files reach the required point in time.</p>
+                </div>
+                <div class="concept-item">
+                  <h4>Control file and SPFILE</h4>
+                  <p>The control file stores database structure and RMAN metadata. The SPFILE stores initialization parameters. Back them up because disaster recovery often starts with these files.</p>
+                </div>
+                <div class="concept-item">
+                  <h4>Recovery catalog</h4>
+                  <p>A catalog is an optional separate schema that stores RMAN metadata outside the target database control file. It is useful for longer retention and many databases.</p>
+                </div>
+                <div class="concept-item">
+                  <h4>Retention and obsolete backups</h4>
+                  <p>The retention policy defines how long backups must remain recoverable. RMAN can report and delete obsolete backups based on that policy.</p>
+                </div>
+              </div>
+            </article>
+
+            <div aria-label="Useful RMAN commands">
+              <details class="command-group" open>
+                <summary>Connection and configuration</summary>
+                <div class="command-body">
+                  <p>Use these first to connect and inspect backup policy.</p>
+                  <pre><code>rman target /
+rman target sys/password@ORCL
+
+show all;
+
+configure retention policy to recovery window of 7 days;
+configure controlfile autobackup on;
+configure default device type to disk;
+configure channel device type disk format '/backup/rman/%d_%U.bkp';</code></pre>
+                </div>
+              </details>
+
+              <details class="command-group">
+                <summary>Backup commands</summary>
+                <div class="command-body">
+                  <p>Core commands for database, tablespace, datafile, archive log, and control file backups.</p>
+                  <pre><code>backup database;
+backup database plus archivelog;
+backup incremental level 0 database;
+backup incremental level 1 database;
+
+backup tablespace users;
+backup datafile 4;
+backup current controlfile;
+backup spfile;
+
+backup archivelog all;
+backup archivelog all delete input;</code></pre>
+                </div>
+              </details>
+
+              <details class="command-group">
+                <summary>Restore commands</summary>
+                <div class="command-body">
+                  <p>Restore copies files from backups. Recovery is usually needed after restore.</p>
+                  <pre><code>startup mount;
+restore database;
+recover database;
+alter database open;
+
+restore tablespace users;
+recover tablespace users;
+
+restore datafile 4;
+recover datafile 4;
+
+restore controlfile from autobackup;
+restore spfile from autobackup;</code></pre>
+                </div>
+              </details>
+
+              <details class="command-group">
+                <summary>Point-in-time recovery</summary>
+                <div class="command-body">
+                  <p>Use point-in-time recovery when you need to recover before a mistake such as accidental delete or drop.</p>
+                  <pre><code>run {
+  set until time "to_date('2026-05-22 10:30:00', 'yyyy-mm-dd hh24:mi:ss')";
+  restore database;
+  recover database;
+}
+alter database open resetlogs;
+
+run {
+  set until sequence 120 thread 1;
+  restore database;
+  recover database;
+}
+alter database open resetlogs;</code></pre>
+                </div>
+              </details>
+
+              <details class="command-group">
+                <summary>Validation and reporting</summary>
+                <div class="command-body">
+                  <p>Validate before a real incident. These commands help prove backups exist and can be read.</p>
+                  <pre><code>list backup summary;
+list backup of database;
+list backup of archivelog all;
+
+report schema;
+report obsolete;
+report need backup;
+
+crosscheck backup;
+crosscheck archivelog all;
+validate database;
+restore database validate;</code></pre>
+                </div>
+              </details>
+
+              <details class="command-group">
+                <summary>Maintenance and cleanup</summary>
+                <div class="command-body">
+                  <p>Keep RMAN metadata accurate and remove backups only when they are no longer needed by the retention policy.</p>
+                  <pre><code>delete obsolete;
+delete expired backup;
+delete expired archivelog all;
+
+catalog start with '/backup/rman/';
+change backup unavailable;
+change backup available;
+
+resync catalog;</code></pre>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+
         <section id="notes">
           <div class="section-header">
             <div>
@@ -561,6 +817,7 @@
                 <button class="filter-btn" type="button" data-filter="SQL">SQL</button>
                 <button class="filter-btn" type="button" data-filter="PL/SQL">PL/SQL</button>
                 <button class="filter-btn" type="button" data-filter="Admin">Admin</button>
+                <button class="filter-btn" type="button" data-filter="RMAN">RMAN</button>
                 <button class="filter-btn" type="button" data-filter="Performance">Performance</button>
               </div>
               <div id="notesList" class="notes-list" aria-live="polite"></div>
@@ -579,6 +836,7 @@
                   <option>SQL</option>
                   <option>PL/SQL</option>
                   <option>Admin</option>
+                  <option>RMAN</option>
                   <option>Performance</option>
                   <option>Troubleshooting</option>
                 </select>
@@ -765,7 +1023,7 @@
 
     function tagClass(category) {
       if (category === "SQL" || category === "PL/SQL") return "sql";
-      if (category === "Admin" || category === "Troubleshooting") return "admin";
+      if (category === "Admin" || category === "RMAN" || category === "Troubleshooting") return "admin";
       if (category === "Performance") return "performance";
       return "database";
     }
