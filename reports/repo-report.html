@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oracle Knowledgebase Repository Report</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f6f7f4;
+      color: #20201d;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
+    }
+
+    header {
+      border-bottom: 4px solid #b3261e;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    h2 {
+      margin: 28px 0 10px;
+      font-size: 22px;
+    }
+
+    p {
+      color: #62645f;
+    }
+
+    .panel {
+      background: #ffffff;
+      border: 1px solid #d9dcd2;
+      border-radius: 8px;
+      padding: 18px;
+      margin: 14px 0;
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 10px 16px;
+      margin: 0;
+    }
+
+    dt {
+      font-weight: 700;
+      color: #373832;
+    }
+
+    dd {
+      margin: 0;
+      color: #62645f;
+      overflow-wrap: anywhere;
+    }
+
+    code,
+    pre {
+      font-family: Menlo, Consolas, monospace;
+    }
+
+    code {
+      background: #eef0ea;
+      border: 1px solid #d8dbd2;
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #30322d;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      border-radius: 6px;
+      background: #20201d;
+      color: #f5f2ea;
+      padding: 14px;
+      font-size: 13px;
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 22px;
+      color: #62645f;
+    }
+
+    a {
+      color: #7d1712;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Oracle Knowledgebase Repository Report</h1>
+      <p>Summary of the local Git repository and published GitHub remote.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Repository</h2>
+      <dl>
+        <dt>Local path</dt>
+        <dd><code>/Users/paulsi/codex/study_plan/git_repo/oracle</code></dd>
+        <dt>Branch</dt>
+        <dd><code>main</code></dd>
+        <dt>Status</dt>
+        <dd><code>main</code> is aligned with <code>origin/main</code></dd>
+        <dt>Remote</dt>
+        <dd><a href="https://github.com/pp-nextgen-dba/oracle">https://github.com/pp-nextgen-dba/oracle</a></dd>
+      </dl>
+    </section>
+
+    <section class="panel">
+      <h2>Project Files</h2>
+      <ul>
+        <li><code>index.html</code> - Oracle knowledgebase web page with editable local notes.</li>
+        <li><code>repo-report.html</code> - this repository report.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Recent Commits</h2>
+      <pre>1312d81 Add RMAN table restore guide
+f46e361 Add RMAN backup and recovery section
+170c040 Add Oracle knowledgebase page</pre>
+    </section>
+
+    <section class="panel">
+      <h2>Current Knowledgebase Content</h2>
+      <ul>
+        <li>Oracle architecture, SQL, PL/SQL, administration, performance, and transaction topics.</li>
+        <li>Editable technical notes stored in browser local storage.</li>
+        <li>RMAN concepts for backup, restore, recovery, catalog, retention, and validation.</li>
+        <li>RMAN command groups for backup, restore, point-in-time recovery, table restore, and cleanup.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
