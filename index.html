@@ -771,6 +771,7 @@ alter database open resetlogs;</code></pre>
                 <summary>Restore a table</summary>
                 <div class="command-body">
                   <p>Use RMAN table recovery when a table was dropped, truncated, or damaged and you want to bring it back without restoring the whole database. The auxiliary destination must have enough temporary space for RMAN's recovery work.</p>
+                  <p>Metadata and optimizer statistics are restored together with the data because they are stored in the database. For RMAN table recovery, the recovered table is imported through Data Pump with table definition, indexes, grants, and statistics unless import options exclude them. Verify stats with <code>DBMS_STATS</code> after restore if production SQL depends on the table.</p>
                   <pre><code>rman target /
 
 recover table HR.EMPLOYEES
