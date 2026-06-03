@@ -29,5 +29,5 @@ https://pp-nextgen-dba.github.io/oracle/
 ## Local Repo Path
 
 ```text
-/Users/paulsi/codex/study_plan/git_repo/oracle
+C:\codex\oracle
 ```

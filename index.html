@@ -938,6 +938,52 @@ resync catalog;</code></pre>
               </tbody>
             </table>
           </div>
+
+          <details class="command-group" open>
+            <summary>Session DOP usage</summary>
+            <div class="command-body">
+              <p>Use this to see active parallel query sessions, requested DOP, actual DOP, and how many PX slave sessions are attached to each query coordinator.</p>
+              <pre><code>set linesize 220
+set pagesize 100
+
+column username format a18
+column module format a30
+column qc_session format a18
+column sql_id format a13
+
+select
+    px.qcinst_id || ':' || px.qcsid || ',' || px.qcserial# as qc_session,
+    qc.username,
+    qc.module,
+    qc.sql_id,
+    px.req_degree as requested_dop,
+    px.degree as actual_dop,
+    count(*) as px_slaves,
+    min(s.status) as slave_status,
+    max(s.event) keep (dense_rank last order by s.last_call_et) as latest_slave_event
+from gv$px_session px
+join gv$session s
+  on s.inst_id = px.inst_id
+ and s.sid = px.sid
+ and s.serial# = px.serial#
+left join gv$session qc
+  on qc.inst_id = px.qcinst_id
+ and qc.sid = px.qcsid
+ and qc.serial# = px.qcserial#
+where px.qcsid is not null
+group by
+    px.qcinst_id,
+    px.qcsid,
+    px.qcserial#,
+    qc.username,
+    qc.module,
+    qc.sql_id,
+    px.req_degree,
+    px.degree
+order by px_slaves desc, qc_session;</code></pre>
+              <p><code>requested_dop</code> is what Oracle requested. <code>actual_dop</code> is what Oracle allocated. <code>px_slaves</code> shows the number of parallel slave sessions currently attached.</p>
+            </div>
+          </details>
         </section>
 
         <section id="study-plan">
